@@ -1,2 +1,4 @@
-# scim-client-python
-SCIM client python
+scim-client-python
+==================
+
+Implementation of a SCIM client in Python
