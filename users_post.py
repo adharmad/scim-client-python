@@ -1,17 +1,11 @@
 #! /usr/bin/env python
 # users_post.py
 
-import requests, json
-from config import SERVER_URL
-from config import TENANT_NAME
+import json
 from scim import *
+import comm
 
-headers = {
-        "X-USER-IDENTITY-DOMAIN-NAME" : TENANT_NAME,
-        "Content-Type" : "application/json"
-}
-
-userPrefix = "testUser24"
+userPrefix = "testUser25"
 
 def main():
     user = User()
@@ -27,7 +21,7 @@ def main():
     }
     user.emails =[email1]
 
-    r = requests.post(SERVER_URL, headers=headers, data=user.to_json())
+    r = comm.post(user)
     u = User.from_json(r.text)
     print ("ID = " + u.id + " username = " + u.userName)
     print ("Created User " + userPrefix + " response=" + str(r.status_code))

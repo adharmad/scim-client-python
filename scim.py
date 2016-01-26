@@ -1,7 +1,7 @@
 # Module scim
 
 import json
-
+   
 class SCIMObject:
     def __init__(self, *initial_data, **kwargs):
         for dictionary in initial_data:
@@ -19,6 +19,8 @@ class SCIMObject:
         return cls(**json_dict)
 
 class User(SCIMObject):
+    URI = "/Users"
+
     CORE_USER_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:User"
     ENTERPRISE_USER_SCHEMA = "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User"
     IDCS_USER_SCHEMA = "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User"
@@ -62,3 +64,31 @@ class User(SCIMObject):
             self.schemas += [User.USERSTATE_USER_SCHEMA]
 
         self.__dict__[name] = value
+
+class Group(SCIMObject):
+    URI = "/Groups"
+
+    CORE_GROUP_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:Group"
+    IDCS_GROUP_SCHEMA = "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group"
+
+    SCIM_ATTRS = ['schemas', 'id', 'externalId', 'meta', 'idaasCreatedBy',
+    'idaasLastModifiedBy']
+    CORE_ATTRS = ['displayName', 'members']
+    IDCS_ATTRS = ['internalName', 'description', 'creationMechanism', 'appRoles']
+
+    def __init__(self, *initial_data, **kwargs):
+        self.schemas = [Group.CORE_GROUP_SCHEMA]
+
+        super(SCIMObject, self).__init__()
+
+        for dictionary in initial_data:
+            for key in dictionary:
+                setattr(self, key, dictionary[key])
+        for key in kwargs:
+            setattr(self, key, kwargs[key])
+
+    def __setattr__(self, name, value):
+        if name in Group.IDCS_ATTRS:
+            self.schemas += [Group.IDCS_GROUP_SCHEMA]
+
+        self.__dict__[name] = value        

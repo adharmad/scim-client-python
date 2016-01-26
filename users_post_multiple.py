@@ -1,38 +1,31 @@
 #! /usr/bin/env python
-# users_post.py
+# users_post_multiple.py
 
-import requests, json
+import json
+from scim import *
+import comm
 
-url = "http://adc01dyc.us.oracle.com:9246/admin/v1/Users"
-
-headers = {
-        "X-USER-IDENTITY-DOMAIN-NAME" : "TENANT1",
-        "Content-Type" : "application/json"
-}
-
-userPrefix = "idcsUser"
+userPrefix = "helloUser"
 count = 10
 
 def createUser(userName):
-    payload = {
-        "schemas": [ "urn:ietf:params:scim:schemas:core:2.0:User" ],
-        "userName": userName,
-        "name": {
-            "givenName": userPrefix + "_First",
-            "familyName": userPrefix + "_Last"
-        },
-        "emails": [
-            {
-                "value": userPrefix + "@example.com",
-                "type": "home",
-                "primary": True
-            }
-        ]
+    user = User()
+    user.userName = userName
+    user.name = { 
+        "givenName" : userName + "_First",
+        "familyName" : userName + "_Last",
     }
+    email1 = {
+        "value" : userName + "@example.com",
+        "type" : "home",
+        "primary" : True
+    }
+    user.emails =[email1]
 
-    jsonPayload = json.dumps(payload)
-    r = requests.post(url, headers=headers, data=jsonPayload)
-    print ("Created User " + userName + " response=" + str(r.status_code))
+    r = comm.post(user)
+    u = User.from_json(r.text)
+    print ("ID = " + u.id + " username = " + u.userName)
+    print ("Created User " + userPrefix + " response=" + str(r.status_code))
 
 def main():
     for i in range(count):
