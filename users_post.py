@@ -5,7 +5,7 @@ import json
 from scim import *
 import comm
 
-userPrefix = "testUser25"
+userPrefix = "testUser2"
 
 def main():
     user = User()
