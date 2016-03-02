@@ -5,7 +5,7 @@ import json
 from scim import *
 import comm
 
-grpPrefix = "testGroup4"
+grpPrefix = "testGroup1"
 
 def main():
     group = Group()
